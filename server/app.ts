@@ -19,7 +19,7 @@ app.use(cors({
 //test our api
 app.get('/test',(req : Request,res : Response,next : NextFunction) => {
     res.status(200).json({
-        success:true,
+        success: true,
         message: "Backend is working"
     })
 })
