@@ -5,6 +5,9 @@ export const app = express()
 
 import cors from "cors"
 import cookieParser from "cookie-parser"
+import { ErrorMiddleware } from "./middleware/error"
+
+
 
 // Configure Express to use the express.json middleware with a payload size limit of 50 megabytes.
 app.use(express.json({limit:"50mb"}))
@@ -30,3 +33,8 @@ app.all('*',(req : Request,res : Response,next : NextFunction) => {
      err.statusCode=404;
      next(err)
 })
+
+
+//error middleware
+
+app.use(ErrorMiddleware) //not 'ErrorHandler'
