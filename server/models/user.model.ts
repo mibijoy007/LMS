@@ -1,8 +1,12 @@
+require('dotenv').config()
 
 import mongoose, { Schema , Document, Model } from "mongoose";
 import bcrypt from 'bcryptjs'
 import { Scheduler } from "timers/promises";
 import { timeStamp } from "console";
+import jwt from "jsonwebtoken";
+
+
 
 //email checking for validity
 const emailRegexPettern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -19,7 +23,10 @@ export interface IUser extends Document{
     role: string;
     isVerified: boolean;
     courses: Array<{courseID:string}>;
-    comparePassword: (password: string) => Promise<boolean>
+    comparePassword: (password: string) => Promise<boolean>;
+    SignInOutAccessToken: () => string;
+    SignInOutRefreashToken: () => string;
+
 }
 
 //the userModle "Schema"
@@ -75,13 +82,24 @@ userSchema.pre<IUser>('save', async function (next) {
     next();
 })
 
-//comparing passwords
 
+//sign in out access token(short time expried)
+userSchema.methods.SignInOutAccessToken = function () {
+    return jwt.sign({id: this._id}, process.env.SIGN_IN_OUT_ACCESS_TOKEN || '')
+}
+
+//sign in out refreash token(lomg time expried)
+userSchema.methods.SignInOutRefreashToken = function(){
+    return jwt.sign({id: this._id}, process.env.SIGN_IN_OUT_REFREASH_TOKEN || '')
+}
+
+
+//comparing passwords
 userSchema.methods.comparePassword = async function (enteredPassword: string): Promise<boolean>{
     return await bcrypt.compare(enteredPassword, this.password);
 }
 
 
-//exporting userModel
+
 const userModel: Model<IUser> = mongoose.model("User",userSchema)
 export default userModel;
