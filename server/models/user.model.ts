@@ -88,7 +88,7 @@ userSchema.methods.SignInOutAccessToken = function () {
     return jwt.sign({id: this._id}, process.env.SIGN_IN_OUT_ACCESS_TOKEN || '')
 }
 
-//sign in out refreash token(lomg time expried)
+//sign in out refreash token(long time expried - it helps generate "Access_token")
 userSchema.methods.SignInOutRefreashToken = function(){
     return jwt.sign({id: this._id}, process.env.SIGN_IN_OUT_REFREASH_TOKEN || '')
 }
